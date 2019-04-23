@@ -1,2 +1,2 @@
-python -m pytest -rp
+python -m pytest -rps
 

@@ -25,7 +25,6 @@ def test_samepwd_not_allowed():
     bob.changePassword("abc123")
     with pytest.raises(user.PasswordMatchException):
         bob.changePassword("abc123")
-        #assert check_email_format("good@email.com")
 
 def test_historical_samepwd_not_allowed():
     bob = user.User()

@@ -33,8 +33,7 @@ class User(object):
     def changePassword(self,newPassword):
         logger.debug("CurrentPassword: {}, NewPassword: {}".format(self.getCurrentPassword(),newPassword))
         # check against cur pwd
-        #if self._verify_password(newPassword,self.getCurrentPassword()):
-        if newPassword == self.getCurrentPassword():
+        if self._verify_password(self.getCurrentPassword(),str(newPassword)):
             logger.fatal("Passwords match, heading back.")
             raise PasswordMatchException("Matches Current Go Home")
         # check against historical pwds 

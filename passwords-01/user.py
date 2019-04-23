@@ -8,7 +8,7 @@ __license__ = "MIT"
 
 from logzero import logger
 
-savePrevious = 5
+MAX_HISTORICAL_PWDS = 5
 
 class PasswordMatchException(Exception):
     pass
@@ -16,8 +16,10 @@ class HistoricalPasswordMatchException(Exception):
     pass
 
 class User(object):
-    curPwd = ""
-    pwdHistory = list()
+ 
+    def __init__(self): 
+        self.curPwd = ""            # Instance Variable 
+        self.pwdHistory = list() 
 
     #think of this like the call to the database to retrieve the password or whatever is in the db.
     def getCurrentPassword(self):
@@ -36,14 +38,15 @@ class User(object):
         # check against historical pwds 
         historicalPasswords = self.getPasswordHistory() 
         if newPassword in historicalPasswords:
-            logger.fatal("Password is in historical list, try again.")
+            logger.fatal("Password is in historical list, try again. {}".format(historicalPasswords)) 
             raise HistoricalPasswordMatchException("Found in historical list") 
         logger.debug("Current Historical List: {}".format(historicalPasswords))
 
         # got here, so lets update the pwd and add it to the history
         self.curPwd = newPassword
         historicalPasswords.append(newPassword)
-        historicalPasswords.remove(historicalPasswords[0])
+        if len(historicalPasswords) >= MAX_HISTORICAL_PWDS:
+            historicalPasswords.remove(historicalPasswords[0])
 
         logger.debug("Password changed to {} ".format(newPassword))
 

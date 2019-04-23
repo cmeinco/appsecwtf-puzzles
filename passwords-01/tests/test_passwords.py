@@ -20,37 +20,36 @@ def test_positive():
     bob = user.User()
     bob.changePassword("abc123")
 
-@pytest.mark.xfail(raises=Exception)
 def test_samepwd_not_allowed():
     bob = user.User()
     bob.changePassword("abc123")
-    bob.changePassword("abc123")
-    
-@pytest.mark.xfail(raises=Exception)
+    with pytest.raises(user.PasswordMatchException):
+        bob.changePassword("abc123")
+        #assert check_email_format("good@email.com")
+
 def test_historical_samepwd_not_allowed():
     bob = user.User()
     bob.changePassword("abc123")
     bob.changePassword("abc1234")
-    bob.changePassword("abc123") #fails here
-    assert 0 #should never touch this.
+    with pytest.raises(user.HistoricalPasswordMatchException):
+        bob.changePassword("abc123") #fails here
 
 def test_historical12_pwdstored():
-    maxHistorical = user.savePrevious
+    maxHistorical = user.MAX_HISTORICAL_PWDS
     bob = user.User()
     bob.changePassword("abc123")
     for n in range(maxHistorical-1):
         bob.changePassword(n) 
     bob.changePassword("abc123") # first should fall off
 
-@pytest.mark.xfail(raises=Exception)
 def test_historical12_samepwd_not_allowed():
-    maxHistorical = user.savePrevious
+    maxHistorical = user.MAX_HISTORICAL_PWDS
     bob = user.User()
     bob.changePassword("abc123")
     for n in range(maxHistorical-2):
         bob.changePassword(n) 
-    bob.changePassword("abc123") # first should fall off
-    assert 0
+    with pytest.raises(user.HistoricalPasswordMatchException):
+        bob.changePassword("abc123") # first should not have fallen off yet
 
 @pytest.mark.skip(reason="current not built out")
 def test_security_storage_protection():

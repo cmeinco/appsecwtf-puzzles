@@ -50,14 +50,6 @@ def test_historical12_samepwd_not_allowed():
     with pytest.raises(user.HistoricalPasswordMatchException):
         bob.changePassword("abc123") # first should not have fallen off yet
 
-@pytest.mark.skip(reason="current not built out")
-def test_security_storage_protection():
-    bob = user.User()
-    tempPwd = "abc1"
-    bob.changePassword(tempPwd)
-    assert tempPwd != bob.getCurrentPassword()
-
-
 
 def test_login():
     bob = user.User()
@@ -71,4 +63,6 @@ def test_security_storage_protection():
     tempPwd = "abc1"
     bob.changePassword(tempPwd)
     assert tempPwd != bob.getCurrentPassword()
+
+#historical passwords being stored in the clear. How to test for this problem?
 
